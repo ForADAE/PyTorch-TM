@@ -58,7 +58,9 @@ inline void check_and_update_common_device(optional<Device>& common_device, cons
   }
 
   if (C10_UNLIKELY(common_device != tensor.device())) {
-    common_device_check_failure(common_device, tensor, methodName, argName);
+    // printf("common_device: %s\n", common_device->str().c_str());
+    tensor.to_inplace(common_device.value(), /*at::ScalarType=*/tensor.scalar_type(), /*non_blocking=*/false, /*copy=*/true, /*memory_format=*/c10::MemoryFormat::Contiguous);
+    // common_device_check_failure(common_device, tensor, methodName, argName);
   }
 }
 

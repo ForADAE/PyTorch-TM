@@ -147,6 +147,7 @@ class TORCH_API TensorBase {
   const TensorBase& zero_() const;
 
   TensorBase to(at::TensorOptions options={}, bool non_blocking=false, bool copy=false, c10::optional<at::MemoryFormat> memory_format=c10::nullopt) const;
+  TensorBase to_inplace(at::TensorOptions options={}, bool non_blocking=false, bool copy=false, c10::optional<at::MemoryFormat> memory_format=c10::nullopt);
 
   bool is_complex() const {
     return at::isComplexType(this->scalar_type());
@@ -931,7 +932,9 @@ namespace detail {
 // requested intrusive_ptr type.
 template <typename T, typename... Args>
 TensorBase make_tensor_base(Args&&... args) {
-  return TensorBase(c10::make_intrusive<T>(std::forward<Args>(args)...));
+  // return TensorBase(c10::make_intrusive<T>(std::forward<Args>(args)...));
+  auto ret = TensorBase(c10::make_intrusive<T>(std::forward<Args>(args)...));
+  return ret;
 }
 
 } // namespace detail

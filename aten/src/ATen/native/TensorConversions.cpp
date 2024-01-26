@@ -62,6 +62,9 @@
 #include <algorithm>
 #include <numeric>
 
+#include <vector>
+#include <map>
+
 namespace at {
 namespace native {
 
@@ -493,6 +496,42 @@ Tensor to(const Tensor& self, const Tensor& other, bool non_blocking, bool copy,
       copy,
       optional_memory_format);
 }
+
+Tensor to_inplace(Tensor& self, Device device, ScalarType dtype, bool non_blocking, bool copy, c10::optional<c10::MemoryFormat> optional_memory_format) {
+  // printf("to_inplace for tensor: %p\n", &self);
+  auto result = to_impl(
+      self,
+      dtype,
+      nullopt,
+      ensure_has_index(device),
+      nullopt,
+      non_blocking,
+      copy,
+      optional_memory_format);
+  // self.resize_(result.sizes());
+  // printf("to_inplace result: %p\n", &result);
+  // self.copy_(result);
+  self = result;
+  // printf("After copy\n");
+  // printf("to_inplace self: %p\n", &self);
+  return self;
+}
+
+static std::map<c10::string_view, std::vector<at::Tensor*>> managed_tensors;
+
+Tensor tensor_manage(Tensor& self, c10::string_view key) {
+  // static std::vector<at::Tensor*> alive_tensors;
+  // alive_tensors.push_back(&self);
+  // printf("managed size: %lu\n", alive_tensors.size());
+  // printf("tensor_manage: %p\n", &self);
+  // printf("tensor device: %s\n", self.device().str().c_str());
+  managed_tensors[key].push_back(&self);
+  printf("managed size: %lu\n", managed_tensors[key].size());
+  printf("tensor_manage: %p\n", &self);
+  printf("tensor device: %s\n", self.device().str().c_str());
+  return self;
+}
+
 
 // This op is important primarily for lazy / graph-based backends.
 // While this vanilla implementation loops through each tensor and independently converts it to cpu,

@@ -480,9 +480,40 @@ void TensorIteratorBase::compute_types(const TensorIteratorConfig& config) {
                     "Trying to pass too many CPU scalars to non-CPU kernel!");
         ++current_cpu_scalars_on_non_cpu;
       } else if (op.device.value() != common_device) {
-        TORCH_CHECK(false,
-                    "Expected all tensors to be on the same device, but "
-                    "found at least two devices, ", common_device, " and ", op.device.value(), "!");
+        printf("Change device from %d to %d\n", op.device.value().index(), common_device.index());
+        // printf("original pointer : %p\n", &op.tensor_base());
+
+        // TensorBase* temp = (TensorBase*)(&op.tensor_base());
+        // (*(temp)).to_inplace(common_device);
+        // printf("op  device now is: %d\n", op.device.value().index());
+        // printf("op.device pointer: %p\n", &op.tensor_base());
+        // printf("op.pointer value : %d\n", (*(&op.tensor_base())).device().index());
+        // printf("tmp device now is: %d\n", (*(temp)).device().index());
+        // printf("tmp       pointer: %p\n", temp);
+        // printf("\n------\n\n");
+        op.tensor(c10::MaybeOwned<TensorBase>::owned(op.tensor().to(common_device)));
+        // printf("op  device now is: %d\n", op.tensor().device().index());
+        // printf("op  device now is: %d\n", op.device.value().index());
+        op.device = common_device;
+        // printf("op  device now is: %d\n", op.device.value().index());
+        // printf("op.device pointer: %p\n", &op.tensor_base());
+        // printf("op.tensor().to() device now is: %d\n", op.tensor().to(common_device).device().index());
+
+        // op.exchange_tensor(c10::MaybeOwned<TensorBase>::owned(op.tensor().to(common_device)));
+        // printf("op  device now is: %d\n", op.device.value().index());
+        // printf("op.device pointer: %p\n", &op.tensor_base());
+        // temp = op.tensor_base_not_const();
+        // (*(temp)).to_inplace(common_device);
+        // printf("done\n");
+        // printf("op  device now is: %d\n", op.device.value().index());
+        // printf("op.device pointer: %p\n", &op.tensor_base());
+        // printf("tmp device now is: %d\n", (*(temp)).device().index());
+        // printf("tmp       pointer: %p\n", temp);
+        // printf("\n\n\n\n");
+
+        // TORCH_CHECK(false,
+        //             "Expected all tensors to be on the same device, but "
+        //             "found at least two devices, ", common_device, " and ", op.device.value(), "!");
       }
     }
 

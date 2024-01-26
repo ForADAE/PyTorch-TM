@@ -187,6 +187,9 @@ struct TORCH_API OperandInfo {
   const TensorBase& tensor_base() const {
     return *tensor_base_;
   }
+  TensorBase* tensor_base_not_const() {
+    return (TensorBase*)(&tensor_base_);
+  }
   void tensor(c10::MaybeOwned<TensorBase>&& tensor);
 
   // Save the original tensor operand in cases when an output is modified

@@ -50,6 +50,22 @@ TensorBase TensorBase::to(
       options.pinned_memory_opt(), non_blocking, copy, memory_format);
 }
 
+TensorBase TensorBase::to_inplace(
+    at::TensorOptions options,
+    bool non_blocking,
+    bool copy,
+    c10::optional<at::MemoryFormat> memory_format) {
+  // printf("to_inplace for TensorBase: %p\n", this);
+  Tensor self(*this);
+  self = at::_ops::to_dtype_layout::call(
+      self, optTypeMetaToScalarType(options.dtype_opt()),
+      options.layout_opt(), options.device_opt(),
+      options.pinned_memory_opt(), non_blocking, copy, memory_format);
+  // printf("to_inplace for done!\n");
+  *this = self;
+  return *this;
+}
+
 void TensorBase::enforce_invariants() {
   if (impl_.get() == nullptr) {
     throw std::runtime_error("TensorImpl with nullptr is not supported");

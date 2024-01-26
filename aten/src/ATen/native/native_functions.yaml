@@ -7515,6 +7515,17 @@
   device_check: NoCheck
   device_guard: False
 
+- func: to_inplace(Tensor(a!) self, Device device, ScalarType dtype, bool non_blocking=False, bool copy=False, MemoryFormat? memory_format=None) -> Tensor(a)
+  variants: method
+  device_check: NoCheck
+  device_guard: False
+
+- func: tensor_manage(Tensor(a!) self, str key) -> Tensor(a)
+  variants: method
+  device_check: NoCheck
+  device_guard: False
+
+
 - func: meshgrid(Tensor[] tensors) -> Tensor[]
 
 # TODO: Two weeks after this lands, combine these two overloads,
