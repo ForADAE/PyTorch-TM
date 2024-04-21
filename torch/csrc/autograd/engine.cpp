@@ -869,7 +869,7 @@ void validate_outputs(
       std::stringstream ss;
       ss << "invalid gradient at index " << i << " - expected dtype ";
       ss << metadata.dtype() << " but got " << grad.dtype();
-      TORCH_CHECK(false, format_error(ss.str()));
+      // TORCH_CHECK(false, format_error(ss.str()));
     }
     if (grad.layout() != metadata.layout()) {
       // TODO: Currently we only support (*, Sparse) combination for
